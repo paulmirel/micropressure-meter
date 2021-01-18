@@ -1,20 +1,24 @@
-import board
-import time
-import busio
-import adafruit_mprls
+"""
+Author: Mark Roberts (mdroberts1243) from Adafruit code
+This test will initialize the display using displayio and draw a solid white
+background, a smaller black rectangle, miscellaneous stuff and some white text.
 
+"""
+
+import board
 import displayio
 import terminalio
+
+# can try import bitmap_label below for alternative
 from adafruit_display_text import label
 import adafruit_displayio_sh1107
+
 displayio.release_displays()
 # oled_reset = board.D9
 
 # Use for I2C
 i2c = board.I2C()
 display_bus = displayio.I2CDisplay(i2c, device_address=0x3C)
-
-mpr_sensor = adafruit_mprls.MPRLS(i2c, psi_min=0, psi_max=25)
 
 # SH1107 is vertically oriented 64x128
 WIDTH = 128
@@ -43,28 +47,28 @@ inner_sprite = displayio.TileGrid(
 )
 splash.append(inner_sprite)
 
+# Draw some white squares
+sm_bitmap = displayio.Bitmap(8, 8, 1)
+sm_square = displayio.TileGrid(sm_bitmap, pixel_shader=color_palette, x=58, y=17)
+splash.append(sm_square)
+
+med_bitmap = displayio.Bitmap(16, 16, 1)
+med_square = displayio.TileGrid(med_bitmap, pixel_shader=color_palette, x=71, y=15)
+splash.append(med_square)
+
+lrg_bitmap = displayio.Bitmap(32, 32, 1)
+lrg_square = displayio.TileGrid(lrg_bitmap, pixel_shader=color_palette, x=91, y=28)
+splash.append(lrg_square)
+
 # Draw some label text
-text1 = "Detector Chamber"  
+text1 = "0123456789ABCDEF123456789AB"  # overly long to see where it clips
 text_area = label.Label(terminalio.FONT, text=text1, color=0xFFFFFF, x=8, y=8)
 splash.append(text_area)
-text2 = "Gage Pressure"
-text_area2 = label.Label(terminalio.FONT, text=text2, color=0xFFFFFF, x=8, y=18)
+text2 = "SH1107"
+text_area2 = label.Label(
+    terminalio.FONT, text=text2, scale=2, color=0xFFFFFF, x=9, y=44
+)
 splash.append(text_area2)
 
-text3 = "No Reading"
-text_area3 = label.Label(terminalio.FONT, text=text3, scale=2, color=0xFFFFFF, x=9, y=44)
-splash.append(text_area3)
-
 while True:
-    pressure_mbar = mpr_sensor.pressure
-    print( pressure_mbar ) 
-    time.sleep(0.5)
-    if False: 
-        time.sleep(1)
-        text3 = "                        "
-        text_area3 = label.Label(terminalio.FONT, text=text3, scale=2, color=0xFFFFFF, x=9, y=44)
-        splash.append(text_area3)
-        time.sleep(1)
-        text3 = "SH1107"
-        text_area3 = label.Label(terminalio.FONT, text=text3, scale=2, color=0xFFFFFF, x=9, y=44)
-        splash.append(text_area3)
+    pass
